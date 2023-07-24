@@ -1,0 +1,52 @@
+import cv2
+import numpy as np
+import random
+
+color=(0,255,0)
+save='' 
+x=y=20
+point = (random.randint(10, 246), random.randint(10, 246))
+body=[[40,20,60,40],[60,20,80,40]]
+while True:
+    img=np.zeros((256,256,3),np.uint8)
+    cv2.circle(img, point, 10, (0, 0, 255), -1)  # 食物
+    
+    for i in range(len(body)):
+        cv2.rectangle(img,(body[i][0],body[i][1]),(body[i][2],body[i][3]),(100,100,200),-1)  # 身體
+    
+    k=cv2.waitKey(10)
+    if k!=-1:
+        if k==ord('w'):
+            save=k
+        elif k==ord('s'):
+            save=k
+        elif k==ord('a'):
+            save=k
+        elif k==ord('d'):
+            save=k
+        elif k==27:
+            break
+        
+    if save==ord('w'):
+        y=y-1
+    elif save==ord('s'):
+        y=y+1
+    elif save==ord('a'):
+        x=x-1
+    elif save==ord('d'):
+        x=x+1
+    cv2.rectangle(img,(x,y),(x+20,y+20),(0,100,0),-1)  # 蛇   
+    cv2.imshow("RectangleImage",img)
+    
+    if  x<= point[0] <=x+20 and y<= point[1] <= y+20: # 吃到食物
+        point = (random.randint(10, 246), random.randint(10, 246))
+        body.append([x,y,x+20,y+20])
+    else:
+        for i,xyxy in enumerate(body):
+            for j in range(len(xyxy)):
+                if i <(len(body))-1:
+                    body[i][j]=body[i+1][j]
+        body.pop()
+        body.append([x,y,x+20,y+20])
+  
+cv2.destroyAllWindows()
